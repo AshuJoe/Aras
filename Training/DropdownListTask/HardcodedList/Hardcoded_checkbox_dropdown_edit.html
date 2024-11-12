@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown with Checkboxes</title>
+  <style>
+    /* Style for dropdown container */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      width: 250px; /* Increased width for the dropdown */
+    }
+
+    /* Style for the selected options display */
+    .dropdown-display {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 3px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f9f9f9;
+    }
+
+    /* Style for the dropdown list with checkboxes */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 100%;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      padding: 8px;
+      z-index: 1;
+      max-height: 200px; /* Adjusted height for 5 options */
+      overflow-y: auto;   /* Enable vertical scrolling */
+    }
+
+    /* Show dropdown content when the .show class is applied */
+    .dropdown .dropdown-content.show {
+      display: block;
+    }
+
+    /* Style for the arrow icon */
+    .arrow {
+      margin-left: 10px;
+      border: solid #333; /* Arrow color */
+      border-width: 0 2px 2px 0;
+      display: inline-block;
+      padding: 2px;
+      transform: rotate(45deg); /* Rotating to form a downward arrow */
+      transition: transform 0.3s; /* Transition for smooth rotation */
+    }
+
+    /* Rotate the arrow when dropdown is shown */
+    .dropdown.show .arrow {
+      transform: rotate(-135deg); /* Rotate for upward arrow when open */
+    }
+
+    /* Style for the Done button */
+    .done-button {
+      background-color: #007BFF; /* Blue background */
+      color: white; /* White text */
+      border: none; /* Remove default border */
+      border-radius: 5px; /* Curved edges */
+      padding: 2px 10px; /* Padding for size */
+      cursor: pointer; /* Pointer cursor on hover */
+      transition: background-color 0.3s; /* Smooth transition for hover */
+    }
+
+    /* Change background color on hover */
+    .done-button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    /* Style for the checkbox label */
+    .dropdown-content label {
+      display: flex; /* Use flexbox to align items in a row */
+      align-items: center; /* Center align items vertically */
+      margin-bottom: 5px; /* Space between each label */
+    }
+
+    /* Style for the images next to labels */
+    .dropdown-content img {
+      width: 40px; /* Set the width of the images to a larger size */
+      height: 40px; /* Set the height of the images to a larger size */
+      margin-right: 5px; /* Spacing between image and label */
+      vertical-align: middle; /* Align the image vertically with the text */
+    }
+  </style>
+</head>
+<body>
+
+  <p>Selection: <span id="savedValueDisplay"></span></p>
+
+  <div class="dropdown">
+    <div class="dropdown-display" onclick="toggleDropdown()">
+      <span>Select Options</span>
+      <div class="arrow"></div>
+    </div>
+    <div class="dropdown-content" id="checkboxList">
+      <!-- Each checkbox option with an image -->
+      <label><input type="checkbox" value="Fire" onclick="updateArasProperty()"><img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a1.jpeg" alt="Fire"> Fire</label>
+      <label><input type="checkbox" value="Water" onclick="updateArasProperty()"><img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a2.jpeg" alt="Water"> Water</label>
+      <label><input type="checkbox" value="Chemical" onclick="updateArasProperty()"><img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a3.jpeg" alt="Chemical"> Chemical</label>
+      <label><input type="checkbox" value="Safety" onclick="updateArasProperty()"><img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a4.jpeg" alt="Safety"> Safety</label>
+      <label><input type="checkbox" value="Medical" onclick="updateArasProperty()"><img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a5.jpeg" alt="Medical"> Medical</label>
+      <label><input type="checkbox" value="Prohibition" onclick="updateArasProperty()"><img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a6.jpeg" alt="Prohibition"> Prohibition</label>
+      <label><input type="checkbox" value="Transport" onclick="updateArasProperty()"><img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a7.jpeg" alt="Transport"> Transport</label>
+      <label><input type="checkbox" value="Flammable" onclick="updateArasProperty()"><img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a8.jpeg" alt="Flammable"> Flammable</label>
+      <label><input type="checkbox" value="Danger" onclick="updateArasProperty()"><img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a9.jpeg" alt="Danger"> Danger</label>
+      <label><input type="checkbox" value="All Safe" onclick="updateArasProperty()"><img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a10.jpeg" alt="All Safe"> All Safe</label>
+    </div>
+  </div>
+
+  <!-- Styled "Done" button -->
+  <button class="done-button" onclick="closeDropdown()">Done</button>
+
+  <script>
+    
+    function toggleDropdown() {
+      const isEditMode = checkEditMode();
+      if (isEditMode) {
+        const dropdown = document.querySelector('.dropdown');
+        dropdown.querySelector('.dropdown-content').classList.toggle("show");
+        dropdown.classList.toggle("show"); 
+      } else {
+        console.log("Dropdown is disabled because edit mode is off.");
+      }
+    }
+
+    
+    function closeDropdown() {
+      const dropdown = document.querySelector('.dropdown');
+      dropdown.querySelector('.dropdown-content').classList.remove("show");
+      dropdown.classList.remove("show"); // Reset arrow position
+    }
+
+    // Function to check edit mode
+    function checkEditMode() {
+      // Assume document.isEditMode is a boolean that indicates if edit mode is enabled
+      console.log("Current edit mode:", document.isEditMode);
+      return document.isEditMode; // Return the edit mode status
+    }
+
+    // Function to load the saved value on page load
+    function loadSavedValue() {
+      let innovator = parent.thisItem;  // Access the current Aras Innovator item
+      let savedValue = innovator.getProperty("a_data", "");  // Retrieve the saved property value
+
+      // Display the saved value in the read-only field
+      document.getElementById("savedValueDisplay").innerText = savedValue;
+
+      // Split the saved value and check the corresponding checkboxes
+      let selectedOptions = savedValue.split(", ");
+      let checkboxes = document.querySelectorAll("#checkboxList input[type='checkbox']");
+      
+      checkboxes.forEach(checkbox => {
+        if (selectedOptions.includes(checkbox.value)) {
+          checkbox.checked = true;
+        }
+      });
+    }
+
+    // Function to update the Aras property based on selected checkboxes
+    function updateArasProperty() {
+      // Get all checked checkboxes and join their values as a comma-separated string
+      let checkboxes = document.querySelectorAll("#checkboxList input[type='checkbox']:checked");
+      let selectedValues = Array.from(checkboxes).map(checkbox => checkbox.value).join(", ");
+      
+      let innovator = parent.thisItem;  // Access the current Aras Innovator item
+      innovator.setProperty("a_data", selectedValues);  // Update the property directly in Aras
+
+      // Update the displayed saved value
+      document.getElementById("savedValueDisplay").innerText = selectedValues;
+    }
+  
+    loadSavedValue();
+  </script>
+
+</body>
+</html>
