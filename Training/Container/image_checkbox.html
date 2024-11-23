@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkbox List</title>
+  <style>
+    /* Style for the container */
+    .custom-dropdown {
+      position: relative;
+      display: inline-block;
+      width: 700px; /* Increased width for the dropdown */
+    }
+ 
+    /* Style for the container that holds all the options */
+    .custom-dropdown-content {
+      position: relative;
+      background-color: #f9f9f9;
+      padding: 16px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      max-height: 300px; /* Increased height for the dropdown */
+      overflow-y: auto;   /* Enable vertical scrolling */
+      display: flex; /* Use flexbox to align items horizontally */
+      flex-wrap: wrap; /* Allow items to wrap if necessary */
+      gap: 20px; /* Space between columns */
+    }
+ 
+    /* Style for each column */
+    .column {
+      flex: 1 1 45%; /* 45% width for each column, so they fit side by side */
+      display: flex;
+      flex-direction: column;
+    }
+ 
+    /* Style for the checkbox label */
+    .custom-dropdown-content label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      position: relative;
+    }
+ 
+    /* Style for the images next to labels */
+    .custom-dropdown-content img {
+      width: 50px; /* Increased width of the images */
+      height: 50px; /* Increased height of the images */
+      margin-right: 10px; /* Spacing between image and checkbox */
+      vertical-align: middle;
+    }
+ 
+    /* Style for the tooltip */
+    .tooltip {
+      visibility: hidden;
+      position: absolute;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 5px;
+      font-size: 12px;
+      left: 20%;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none; /* Ensure the tooltip does not interfere with mouse events */
+    }
+ 
+    /* Tooltip appears when hovering over the image */
+    .custom-dropdown-content label:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+ 
+    .custom-dropdown-content input[type="checkbox"]:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+ 
+  <p>Selection: <span id="customSavedValueDisplay"></span></p>
+ 
+  <div class="custom-dropdown">
+    <!-- Container for checkboxes -->
+    <div class="custom-dropdown-content" id="customCheckboxList">
+      <!-- Checkboxes will be dynamically generated here -->
+    </div>
+  </div>
+ 
+  <script>
+    // Assuming isEditMode should be a global variable (or simulate it here for testing)
+      // You can change this to false to simulate non-edit mode
+ 
+    // Base URL for the images
+    var baseUrl = window.location.origin;
+ 
+    function checkurl(){
+            // var baseUrl = window.location.origin;
+ 
+            // Get the full pathname (everything after the domain)
+            var pathName = window.location.pathname;
+ 
+            // Find the index of "/InnovatorServer/Client/X-salt=" in the pathname
+            var startIndex = pathName.indexOf('/InnovatorServer/Client/X-salt=');
+ 
+            // If we find the correct starting index, extract the base part
+            if (startIndex !== -1) {
+                // Slice the pathname from the start index to include everything until the next "/"
+                var endIndex = pathName.indexOf('/', startIndex + '/InnovatorServer/Client/X-salt='.length);
+ 
+                // If no additional slash is found, set endIndex to the end of the string
+                if (endIndex === -1) {
+                endIndex = pathName.length;
+                }
+ 
+                // Slice the pathname to get the desired portion
+                var desiredPath = pathName.substring(startIndex, endIndex);
+ 
+                // Combine the base URL and the desired portion of the path
+                var fullUrl = baseUrl+desiredPath+'/images/pict/';
+ 
+                // Set the full URL in the form field
+                console.log(fullUrl);
+                baseUrl=fullUrl;
+            } else {
+                // Handle case where the expected part is not found
+                console.log("Expected path not found.");
+            }
+           
+        }
+ 
+      checkurl();
+ 
+    // Function to check if the form is in edit mode or not
+    function checkEditMode() {
+      console.log("Checking edit mode: " + document.isEditMode);  // Log the current edit mode status
+ 
+      // Get the checkboxes inside the container
+      const checkboxes = document.querySelectorAll("#customCheckboxList input[type='checkbox']");
+ 
+      checkboxes.forEach((checkbox) => {
+        checkbox.disabled = !document.isEditMode;  // Disable or enable each checkbox based on isEditMode
+      });
+    }
+ 
+    // Function to load the saved value on page load
+    function loadCustomSavedValue() {
+      let innovator = parent.thisItem;  // Access the current Aras Innovator item
+      let savedValue = innovator.getProperty("a_list", "");  // Retrieve the saved property value
+ 
+      // Display the saved value in the read-only field
+      document.getElementById("customSavedValueDisplay").innerText = savedValue;
+ 
+      // Split the saved value and check the corresponding checkboxes  
+      let selectedOptions = savedValue.split(", ");
+     
+      // Wait until the checkboxes are created and then check the ones that match
+      setTimeout(() => {
+        let checkboxes = document.querySelectorAll("#customCheckboxList input[type='checkbox']");
+       
+        checkboxes.forEach(checkbox => {
+          if (selectedOptions.includes(checkbox.value)) {
+            checkbox.checked = true;
+          }
+        });
+      }, 500);  // Wait for the DOM to update before checking checkboxes
+    }
+ 
+    // Function to update the Aras property based on selected checkboxes
+    function updateCustomArasProperty() {
+      // Get all checked checkboxes and join their values as a comma-separated string
+      let checkboxes = document.querySelectorAll("#customCheckboxList input[type='checkbox']:checked");
+      let selectedValues = Array.from(checkboxes).map(checkbox => checkbox.value).join(", ");
+     
+      let innovator = parent.thisItem;  // Access the current Aras Innovator item
+      innovator.setProperty("a_list", selectedValues);  // Update the property directly in Aras
+ 
+      // Update the displayed saved value
+      document.getElementById("customSavedValueDisplay").innerText = selectedValues;
+    }
+ 
+    // Function to display the list values from ARAS in two columns
+    function displayListInColumns(listValues) {
+      const checkboxDropdown = document.getElementById("customCheckboxList");
+      checkboxDropdown.innerHTML = '';  // Clear previous checkboxes
+ 
+      if (!listValues || listValues.length === 0) {
+        document.getElementById("customSavedValueDisplay").innerText = "No list values found.";
+        return;
+      }
+ 
+      // Create two columns
+      const column1 = document.createElement("div");
+      column1.className = "column";
+      const column2 = document.createElement("div");
+      column2.className = "column";
+ 
+      // Split the list values into two columns
+      const midIndex = Math.ceil(listValues.length / 2);
+      const firstHalf = listValues.slice(0, midIndex);
+      const secondHalf = listValues.slice(midIndex);
+ 
+      // Create checkbox list for column 1
+      firstHalf.forEach(function(item) {
+        var label = aras.getItemProperty(item, "label");
+        var value = aras.getItemProperty(item, "value");
+ 
+        var labelElement = document.createElement("label");
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = value;
+        checkbox.onclick = updateCustomArasProperty; // Attach the update function to each checkbox
+ 
+        // Generate image URL based on the value
+        var img = document.createElement("img");
+        img.src = baseUrl + value + ".jpeg";
+        img.alt = label;  // Use the label as the alt text for the image
+ 
+        // Add tooltip to the label
+        var tooltip = document.createElement("span");
+        tooltip.className = "tooltip";
+        tooltip.innerText = label;
+ 
+        // Append image, checkbox, and tooltip to the label
+        labelElement.appendChild(checkbox);
+        labelElement.appendChild(img);
+       
+        labelElement.appendChild(tooltip);
+ 
+        column1.appendChild(labelElement);
+      });
+ 
+      // Create checkbox list for column 2
+      secondHalf.forEach(function(item) {
+        var label = aras.getItemProperty(item, "label");
+        var value = aras.getItemProperty(item, "value");
+ 
+        var labelElement = document.createElement("label");
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = value;
+        checkbox.onclick = updateCustomArasProperty; // Attach the update function to each checkbox
+ 
+        // Generate image URL based on the value
+        var img = document.createElement("img");
+        img.src = baseUrl + value + ".jpeg";
+        img.alt = label;  // Use the label as the alt text for the image
+ 
+        // Add tooltip to the label
+        var tooltip = document.createElement("span");
+        tooltip.className = "tooltip";
+        tooltip.innerText = label;
+ 
+        // Append image, checkbox, and tooltip to the label
+        labelElement.appendChild(checkbox);
+        labelElement.appendChild(img);
+       
+        labelElement.appendChild(tooltip);
+ 
+        column2.appendChild(labelElement);
+      });
+ 
+      // Append columns to the container
+      checkboxDropdown.appendChild(column1);
+      checkboxDropdown.appendChild(column2);
+ 
+      // Call loadCustomSavedValue once checkboxes are rendered
+      setTimeout(loadCustomSavedValue, 200);  // Delay to ensure the DOM is updated
+    }
+ 
+    // Call displayListInColumns on page load
+    window.onload = function() {
+      const listValues = aras.getListValues("6D931084525743B9B83FC5448D2DE0A5"); // Replace with actual list ID
+      displayListInColumns(listValues);
+ 
+      // Start checking the edit mode every 1 second (1000ms)
+      setInterval(checkEditMode, 1000); // Check every 1 second
+    };
+ 
+    // Tooltip follow mouse position
+    document.addEventListener('mousemove', function(event) {
+      var tooltips = document.querySelectorAll('.tooltip');
+      tooltips.forEach(function(tooltip) {
+        if (tooltip.style.visibility === 'visible') {
+          tooltip.style.left = event.pageX + 10 + 'px'; // Adjust for spacing
+          tooltip.style.top = event.pageY + 10 + 'px';  // Adjust for spacing
+        }
+      });
+    });
+  </script>
+ 
+</body>
+</html>
