@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkboxes in Two Columns with Border</title>
+  <style>
+    /* Style for the container with a border around the options */
+    .checkbox-container {
+      border: 2px solid #007BFF;  /* Blue border around the checkbox list */
+      border-radius: 5px;  /* Rounded corners */
+      padding: 20px;  /* Padding inside the container */
+      margin: 10px 0;  /* Margin around the container */
+      background-color: #f9f9f9;  /* Light background color */
+    }
+
+    /* Style for the checkbox list arranged in two columns */
+    .checkbox-list {
+      display: grid;  /* Use grid layout */
+      grid-template-columns: repeat(2, 1fr);  /* Two equal columns */
+      gap: 15px;  /* Space between the checkboxes */
+      padding: 10px 0;  /* Padding for the container */
+    }
+
+    /* Style for the checkbox labels */
+    .checkbox-list label {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      position: relative; /* Make label a position relative element for positioning tooltips */
+    }
+
+    /* Style for the images next to labels */
+    .checkbox-list img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    /* Tooltip styling */
+    .tooltip {
+      position: absolute;
+      top: -30px;  /* Position the tooltip above the checkbox */
+      left: 50%;
+      transform: translateX(-50%);  /* Center the tooltip */
+      padding: 5px;
+      background-color: rgba(0, 0, 0, 0.7);  /* Dark background */
+      color: #fff;
+      font-size: 12px;
+      border-radius: 4px;
+      display: none;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    /* Display the tooltip when the checkbox label is hovered */
+    .checkbox-list label:hover .tooltip {
+      display: block;
+    }
+
+    /* Style for the Disabled state (visual only) */
+    .disabled {
+      opacity: 0.5;  /* Reduce opacity to indicate disabled state */
+      pointer-events: none;  /* Disable interactions visually and functionally */
+    }
+
+    /* Disable checkbox cursor styling */
+    .checkbox-list input[type="checkbox"]:disabled {
+      cursor: not-allowed;
+    }
+
+  </style>
+</head>
+<body>
+
+  <p>Selection: <span id="savedValueDisplay"></span></p>
+
+  <!-- Container with border around the options -->
+  <div class="checkbox-container">
+    <div class="checkbox-list" id="checkboxList">
+      <!-- Each checkbox option with an image and label with a custom tooltip -->
+      <label>
+        <input type="checkbox" value="Fire" onclick="updateArasProperty()">
+        <img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a1.jpeg" alt="Fire">
+        <span class="tooltip">Fire - The fire safety category</span>
+      </label>
+      <label>
+        <input type="checkbox" value="Water" onclick="updateArasProperty()">
+        <img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a2.jpeg" alt="Water">
+        <span class="tooltip">Water - The water safety category</span>
+      </label>
+      <label>
+        <input type="checkbox" value="Chemical" onclick="updateArasProperty()">
+        <img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a3.jpeg" alt="Chemical">
+        <span class="tooltip">Chemical - The chemical safety category</span>
+      </label>
+      <label>
+        <input type="checkbox" value="Safety" onclick="updateArasProperty()">
+        <img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a4.jpeg" alt="Safety">
+        <span class="tooltip">Safety - General safety precautions</span>
+      </label>
+      <label>
+        <input type="checkbox" value="Medical" onclick="updateArasProperty()">
+        <img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a5.jpeg" alt="Medical">
+        <span class="tooltip">Medical - Medical safety category</span>
+      </label>
+      <label>
+        <input type="checkbox" value="Prohibition" onclick="updateArasProperty()">
+        <img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a6.jpeg" alt="Prohibition">
+        <span class="tooltip">Prohibition - Prohibited safety items</span>
+      </label>
+      <label>
+        <input type="checkbox" value="Transport" onclick="updateArasProperty()">
+        <img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a7.jpeg" alt="Transport">
+        <span class="tooltip">Transport - Transport safety</span>
+      </label>
+      <label>
+        <input type="checkbox" value="Flammable" onclick="updateArasProperty()">
+        <img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a8.jpeg" alt="Flammable">
+        <span class="tooltip">Flammable - Flammable safety items</span>
+      </label>
+      <label>
+        <input type="checkbox" value="Danger" onclick="updateArasProperty()">
+        <img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a9.jpeg" alt="Danger">
+        <span class="tooltip">Danger - Danger items</span>
+      </label>
+      <label>
+        <input type="checkbox" value="All Safe" onclick="updateArasProperty()">
+        <img src="http://localhost/InnovatorServer/Client/X-salt=std_14.0.9.36244-X/images/pict/a10.jpeg" alt="All Safe">
+        <span class="tooltip">All Safe - All safe items</span>
+      </label>
+    </div>
+  </div>
+
+  <script>
+   // Simulating edit mode, set this to false to simulate non-edit mode
+
+    // Function to load the saved value on page load
+    function loadSavedValue() {
+      let savedValue = "Fire, Water";  // Example saved value
+      document.getElementById("savedValueDisplay").innerText = savedValue;
+
+      // Split the saved value and check the corresponding checkboxes
+      let selectedOptions = savedValue.split(", ");
+      let checkboxes = document.querySelectorAll("#checkboxList input[type='checkbox']");
+
+      checkboxes.forEach(checkbox => {
+        if (selectedOptions.includes(checkbox.value)) {
+          checkbox.checked = true;
+        }
+      });
+    }
+
+    // Function to update the Aras property based on selected checkboxes
+    function updateArasProperty() {
+      if (!document.isEditMode) return; // If edit mode is off, prevent updating the property
+
+      // Get all checked checkboxes and join their values as a comma-separated string
+      let checkboxes = document.querySelectorAll("#checkboxList input[type='checkbox']:checked");
+      let selectedValues = Array.from(checkboxes).map(checkbox => checkbox.value).join(", ");
+      
+      let innovator = parent.thisItem;  // Access the current Aras Innovator item
+      innovator.setProperty("html_data", selectedValues);  // Update the property directly in Aras
+
+      // Update the displayed saved value
+      document.getElementById("savedValueDisplay").innerText = selectedValues;
+    }
+
+    // Function to check edit mode and disable functionality
+    function checkEditMode() {
+      const checkboxes = document.querySelectorAll("#checkboxList input[type='checkbox']");
+      
+      if (!document.isEditMode) {
+        // If edit mode is off, disable all checkboxes and visually indicate it
+        checkboxes.forEach(checkbox => {
+          checkbox.disabled = true;
+          checkbox.parentElement.classList.add('disabled');  // Add visual disable styling
+        });
+      } else {
+        // If edit mode is on, enable all checkboxes
+        checkboxes.forEach(checkbox => {
+          checkbox.disabled = false;
+          checkbox.parentElement.classList.remove('disabled');  // Remove disable styling
+        });
+      }
+    }
+
+    // Set an interval to check edit mode every second
+    setInterval(checkEditMode, 1000);
+
+    // Initially load the saved values
+    loadSavedValue();
+  </script>
+
+</body>
+</html>
