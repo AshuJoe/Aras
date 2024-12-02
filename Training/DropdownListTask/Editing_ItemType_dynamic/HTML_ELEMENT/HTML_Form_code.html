@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">a
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown with Checkboxes</title>
+  <style>
+  
+  </style>
+</head>
+<body>
+
+  <p>Selection: <span id="customSavedValueDisplay"></span></p>
+
+  <div class="custom-dropdown">
+    <div class="custom-dropdown-display" onclick="toggleCustomDropdown()">
+      <span>Select Options</span>
+      <div class="custom-arrow"></div>
+    </div>
+    <div class="custom-dropdown-content" id="customCheckboxList">
+      <!-- Checkboxes will be dynamically generated here -->
+    </div>
+  </div>
+
+  
+  <script>
+    // Function to toggle custom dropdown visibility
+    function toggleCustomDropdown() {
+      const dropdown = document.querySelector('.custom-dropdown');
+      dropdown.querySelector('.custom-dropdown-content').classList.toggle("show");
+      dropdown.classList.toggle("show");
+    }
+
+    // Function to close the custom dropdown
+    function closeCustomDropdown() {
+      const dropdown = document.querySelector('.custom-dropdown');
+      dropdown.querySelector('.custom-dropdown-content').classList.remove("show");
+      dropdown.classList.remove("show"); // Reset arrow position
+
+    }
+
+
+  </script>
+
+</body>
+</html>
