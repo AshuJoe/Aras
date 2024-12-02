@@ -1,0 +1,66 @@
+  .custom-dropdown {
+      position: relative;
+      display: inline-block;
+      width: 250px; /* Increased width for the dropdown */
+    }
+
+    /* Style for the selected options display */
+    .custom-dropdown-display {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 3px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f9f9f9;
+    }
+
+    /* Style for the dropdown list with checkboxes */
+    .custom-dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 100%;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      padding: 8px;
+      z-index: 1;
+      max-height: 200px; /* Adjusted height for 5 options */
+      overflow-y: auto;   /* Enable vertical scrolling */
+    }
+
+    /* Show dropdown content when the .show class is applied */
+    .custom-dropdown .custom-dropdown-content.show {
+      display: block;
+    }
+
+    /* Style for the arrow icon */
+    .custom-arrow {
+      margin-left: 10px;
+      border: solid #333; /* Arrow color */
+      border-width: 0 2px 2px 0;
+      display: inline-block;
+      padding: 2px;
+      transform: rotate(45deg); /* Rotating to form a downward arrow */
+      transition: transform 0.3s; /* Transition for smooth rotation */
+    }
+
+    /* Rotate the arrow when dropdown is shown */
+    .custom-dropdown.show .custom-arrow {
+      transform: rotate(-135deg); /* Rotate for upward arrow when open */
+    }
+
+
+
+    /* Change background color on hover */
+    .custom-done-button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    /* Style for the checkbox label */
+    .custom-dropdown-content label {
+      display: flex; /* Use flexbox to align items in a row */
+      align-items: center; /* Center align items vertically */
+      margin-bottom: 5px; /* Space between each label */
+    }
+
