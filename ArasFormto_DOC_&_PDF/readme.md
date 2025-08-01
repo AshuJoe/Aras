@@ -9,6 +9,8 @@ This is the main preview file. It:
 3. Builds a document layout resembling a Word document.
 4. Allows editing in newly opened preview window.
 5. Generates a copy of image for doc file to make the doc file portable.
+
+
 Offers options to:
 ✅ Download the current document as a .doc file.
 ✅ Print or export as PDF using window.print().p
