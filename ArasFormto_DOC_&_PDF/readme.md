@@ -7,7 +7,8 @@ This is the main preview file. It:
 1. Loads dynamic data from thisItem (Aras context object).
 2. Embeds images as Base64.
 3. Builds a document layout resembling a Word document.
-4. Allows inline editing of sections (via contenteditable="true").
+4. Allows editing in newly opened preview window.
+5. Generates a copy of image for doc file to make the doc file portable.
 Offers options to:
 ✅ Download the current document as a .doc file.
 ✅ Print or export as PDF using window.print().p
