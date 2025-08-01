@@ -12,8 +12,8 @@ This is the main preview file. It:
 
 
 Offers options to:
-✅ Download the current document as a .doc file.
-✅ Print or export as PDF using window.print().p
+✅ Download the current preview window as a .doc file.
+✅ Print or export preview window as PDF file.
 
 
 steps:
